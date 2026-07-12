@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: laravel_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./application:/var/www/html
+      - ./infrastructure/docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./infrastructure/docker/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - php
+    networks:
+      - laravel-network
+
+  php:
+    build:
+      context: .                          # ← контекст – корень проекта
+      dockerfile: infrastructure/docker/php/Dockerfile
+    container_name: laravel_php
+    volumes:
+      - ./application:/var/www/html
+      - ./infrastructure/docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_MAX_EXECUTION_TIME=120
+    depends_on:
+      - postgresql
+      - redis
+    networks:
+      - laravel-network
+
+  postgresql:
+    image: postgres:16-alpine
+    container_name: laravel_postgresql
+    environment:
+      POSTGRES_DB: laravel_db
+      POSTGRES_USER: laravel_user
+      POSTGRES_PASSWORD: secret_password
+      POSTGRES_ROOT_PASSWORD: root_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+      - ./infrastructure/docker/postgresql/init:/docker-entrypoint-initdb.d
+    networks:
+      - laravel-network
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: laravel_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --requirepass redis_password
+    networks:
+      - laravel-network
+
+  horizon:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/php/Dockerfile
+    container_name: laravel_horizon
+    volumes:
+      - ./application:/var/www/html
+    command: php artisan horizon
+    depends_on:
+      - php
+      - redis
+    networks:
+      - laravel-network
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/php/Dockerfile
+    container_name: laravel_scheduler
+    volumes:
+      - ./application:/var/www/html
+    command: php artisan schedule:work
+    depends_on:
+      - php
+    networks:
+      - laravel-network
+
+networks:
+  laravel-network:
+    driver: bridge
+
+volumes:
+  postgresql_data:
+  redis_data:

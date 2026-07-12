@@ -1,0 +1,634 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Документация API - модуля Identity",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/identity/auth/user": {
+            "get": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Текущий пользователь со всеми разрешениями",
+                "operationId": "982eca91964db2aa2831a53865e8a537",
+                "responses": {
+                    "200": {
+                        "description": "Данные пользователя с полным списком разрешений"
+                    },
+                    "401": {
+                        "description": "Не авторизован"
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/identity/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Авторизация",
+                "operationId": "82ab0a88cf68acf2652c2be1caf087e5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "secret"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешная авторизация"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации / неверные данные"
+                    }
+                }
+            }
+        },
+        "/api/identity/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Выход",
+                "operationId": "f6302e8011f614198d60d63dc3ec0219",
+                "responses": {
+                    "200": {
+                        "description": "Успешный выход"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/identity/users": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Список пользователей",
+                "operationId": "4c5927a5c4c5f2519ed5a01e047ab323",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ListUsersResponse"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Создать пользователя",
+                "operationId": "00b0193d95e08342dcaefe4dd5e001de",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Пользователь создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CreateUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/identity/users/{id}": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Получить пользователя",
+                "operationId": "259e8884540d253f00f093d017a5dcb0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GetUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден"
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Обновить пользователя",
+                "operationId": "c9a97256a8d6a3df383d271716f4104e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Пользователь обновлён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/identity/users/{id}/deactivate": {
+            "patch": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Деактивировать пользователя",
+                "operationId": "427c1abef52bcf1864b8dc88c007874e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Пользователь деактивирован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DeactivateUserResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден"
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/identity/users/{id}/roles": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Назначить роль пользователю",
+                "operationId": "20d379268457093a56ad26fc8fc15b37",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssignRoleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Роль назначена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AssignRoleResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь или роль не найдены"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Отозвать роль у пользователя",
+                "operationId": "f9cca4775a14627a91a750df0648028c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AssignRoleRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Роль снята",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RevokeRoleResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Пользователь не найден"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/identity/users/auto-login/{id}": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Авторизовать пользователя",
+                "operationId": "0c157b36f0c094013bcd4465f53fd70b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Успешный выход"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "AssignRoleResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Роль назначена"
+                    }
+                },
+                "type": "object"
+            },
+            "RevokeRoleResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Роль снята"
+                    }
+                },
+                "type": "object"
+            },
+            "CreateUserResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "DeactivateUserResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Пользователь деактивирован"
+                    }
+                },
+                "type": "object"
+            },
+            "GetUserResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "user@example.com"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Иван Иванов"
+                    },
+                    "status": {
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "name": {
+                                "type": "string",
+                                "example": "Активный"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "roles": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "admin"
+                                },
+                                "label": {
+                                    "type": "string",
+                                    "example": "Администратор"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2025-01-01 00:00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "ListUsersResponse": {
+                "properties": {
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/GetUserResponse"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUserResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Пользователь обновлён"
+                    }
+                },
+                "type": "object"
+            },
+            "AssignRoleRequest": {
+                "required": [
+                    "role_id"
+                ],
+                "properties": {
+                    "role_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "CreateUserRequest": {
+                "required": [
+                    "name",
+                    "email",
+                    "password",
+                    "password_confirmation"
+                ],
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Иван Иванов"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com"
+                    },
+                    "password": {
+                        "type": "string",
+                        "minLength": 8,
+                        "example": "secret123"
+                    },
+                    "password_confirmation": {
+                        "type": "string",
+                        "example": "secret123"
+                    },
+                    "role_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "example": 1
+                        },
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUserRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "example": "Иван Иванов",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "user@example.com",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Bearer Token",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "Аутентификация"
+        },
+        {
+            "name": "User",
+            "description": "Управление пользователями"
+        }
+    ]
+}

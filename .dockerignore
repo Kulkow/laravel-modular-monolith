@@ -1,0 +1,13 @@
+.git
+.github
+.idea
+.vscode
+node_modules
+vendor
+storage/*.log
+.env
+*.md
+docker-compose*.yml
+Makefile
+infrastructure/
+monitoring/
