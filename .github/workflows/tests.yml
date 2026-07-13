@@ -1,0 +1,60 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: laravel_test
+          POSTGRES_USER: laravel_user
+          POSTGRES_PASSWORD: secret_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: bcmath, ctype, fileinfo, json, mbstring, pdo, pdo_pgsql, pgsql, tokenizer, xml
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Prepare environment
+        run: |
+          cp .env.testing.example .env.testing || true
+          php artisan key:generate --env=testing
+          php artisan config:clear --env=testing
+
+      - name: Run migrations (test DB)
+        run: php artisan migrate --env=testing --force
+
+      - name: Run Module Unit Tests
+        run: vendor/bin/phpunit --testsuite=Modules_Unit
