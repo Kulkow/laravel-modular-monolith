@@ -10,6 +10,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: laravel_test
+      DB_USERNAME: laravel_user
+      DB_PASSWORD: secret_password
+      APP_ENV: testing
+
     services:
       postgres:
         image: postgres:16-alpine
@@ -52,7 +61,6 @@ jobs:
         working-directory: application
         run: |
           cp .env.testing.example .env.testing || true
-          # Заменяем хост на локальный (порт проброшен)
           sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/' .env.testing
           php artisan key:generate --env=testing
           php artisan config:clear --env=testing
