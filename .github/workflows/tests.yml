@@ -52,9 +52,16 @@ jobs:
         working-directory: application
         run: |
           cp .env.testing.example .env.testing || true
-          sed -i 's/DB_HOST=postgresql/DB_HOST=postgres/' .env.testing
+          # Заменяем хост на локальный (порт проброшен)
+          sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/' .env.testing
           php artisan key:generate --env=testing
           php artisan config:clear --env=testing
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          for i in {1..30}; do
+            pg_isready -h 127.0.0.1 -p 5432 && break || sleep 2
+          done
 
       - name: Run migrations (test DB)
         working-directory: application
