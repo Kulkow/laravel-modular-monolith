@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace App\Modules\Identity\Infrastructure\Persistence\User;
 
-use App\Models\Teams\Team;
+
 use App\Modules\Identity\Domain\Role\RoleId;
 use App\Modules\Identity\Domain\User\User;
 use App\Modules\Identity\Domain\User\UserEmail;
 use App\Modules\Identity\Domain\User\UserId;
 use App\Modules\Identity\Domain\User\UserPassword;
 use App\Modules\Identity\Domain\User\UserRepository;
-use App\Modules\Personnel\Infrastructure\Persistence\Employee\EmployeeMapper;
-use App\Modules\Personnel\Infrastructure\Persistence\Employee\EmployeeModel;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 
 final class EloquentUserRepository implements UserRepository
 {

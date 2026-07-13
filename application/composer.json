@@ -1,5 +1,5 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
+    "schema": "https://getcomposer.org/schema.json",
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
@@ -29,7 +29,8 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "App\\Modules\\": "app/Modules/"
+            "App\\Modules\\": "app/Modules/",
+            "App\\Modules\\Identity\\Tests\\": "app/Modules/Identity/Tests/"
         }
     },
     "autoload-dev": {

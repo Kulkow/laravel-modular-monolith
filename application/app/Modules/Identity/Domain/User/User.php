@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace App\Modules\Identity\Domain\User;
 
 use App\Modules\Identity\Domain\Event\UserDeactivated;
-use App\Modules\Identity\Domain\Event\UserEmployeeAssigned;
-use App\Modules\Identity\Domain\Event\UserEmployeeRevoked;
 use App\Modules\Identity\Domain\Event\UserRoleAssigned;
 use App\Modules\Identity\Domain\Event\UserRoleRevoked;
 use App\Modules\Identity\Domain\Role\Role;
 use App\Modules\Identity\Domain\Role\RoleId;
-use App\Modules\Personnel\Domain\Employee\Employee;
-use App\Modules\Personnel\Domain\Employee\EmployeeId;
 
 final class User
 {
