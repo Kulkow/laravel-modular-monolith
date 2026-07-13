@@ -9,8 +9,6 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     services:
       postgres:
@@ -42,21 +40,25 @@ jobs:
       - name: Cache composer dependencies
         uses: actions/cache@v4
         with:
-          path: vendor
-          key: composer-${{ hashFiles('composer.lock') }}
+          path: application/vendor
+          key: composer-${{ hashFiles('application/composer.lock') }}
           restore-keys: composer-
 
       - name: Install dependencies
+        working-directory: application
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Prepare environment
+        working-directory: application
         run: |
           cp .env.testing.example .env.testing || true
           php artisan key:generate --env=testing
           php artisan config:clear --env=testing
 
       - name: Run migrations (test DB)
+        working-directory: application
         run: php artisan migrate --env=testing --force
 
       - name: Run Module Unit Tests
+        working-directory: application
         run: vendor/bin/phpunit --testsuite=Modules_Unit
